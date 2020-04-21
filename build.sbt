@@ -16,7 +16,7 @@ lazy val root = (project in file("."))
     ).map(_ % "0.13.0" % Test)
   )
 
-ThisBuild / description := "Validate Swedish social security numbers."
+ThisBuild / description := "Validate Swedish personal identity numbers."
 ThisBuild / licenses := List(
   "MIT" -> new URL("https://opensource.org/licenses/MIT")
 )

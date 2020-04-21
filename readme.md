@@ -1,6 +1,6 @@
 # personnummer
 
-Validate Swedish social security numbers. Follows version 3 of the [specification](https://github.com/personnummer/meta#package-specification-v3).
+Validate Swedish personal identity numbers. Follows version 3 of the [specification](https://github.com/personnummer/meta#package-specification-v3).
 
 ## Example
 

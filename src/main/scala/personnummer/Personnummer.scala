@@ -74,7 +74,7 @@ class Personnummer {
   }
 
   /**
-    * Check if a Swedish social security number is a coordination number or not.
+    * Check if a Swedish personal identity number is a coordination number or not.
     *
     * @return Boolean
     */
@@ -83,7 +83,7 @@ class Personnummer {
   }
 
   /**
-    * Format a Swedish social security number as one of the official formats,
+    * Format a Swedish personal identity number as one of the official formats,
     * A long format or a short format.
     *
     * If the input number could not be parsed a empty string will be returned.
@@ -101,7 +101,7 @@ class Personnummer {
   }
 
   /**
-    * Get age from a Swedish social security number.
+    * Get age from a Swedish personal identity number.
     *
     * @return Int
     */
@@ -120,7 +120,7 @@ class Personnummer {
   }
 
   /**
-    * Check if a Swedish social security number is for a female.
+    * Check if a Swedish personal identity number is for a female.
     *
     * @return Boolean
     */
@@ -129,7 +129,7 @@ class Personnummer {
   }
 
   /**
-    * Check if a Swedish social security number is for a male.
+    * Check if a Swedish personal identity number is for a male.
     *
     * @return Boolean
     */
@@ -139,13 +139,13 @@ class Personnummer {
   }
 
   /**
-    * Parse Swedish social security number.
+    * Parse Swedish personal identity number.
     */
   private def parse(ssn: String) = {
     val reg: Regex =
       "^(\\d{2}){0,1}(\\d{2})(\\d{2})(\\d{2})([\\-|\\+]{0,1})?(\\d{3})(\\d{0,1})$".r
     if (reg.findAllIn(ssn).toList.length == 0) {
-      throw new Exception("Invalid swedish social security number")
+      throw new Exception("Invalid swedish personal identity number")
     }
 
     val parts: List[String] = reg.findAllIn(ssn).subgroups.toList
@@ -181,12 +181,12 @@ class Personnummer {
     fullYear = century + year
 
     if (this.valid() == false) {
-      throw new Exception("Invalid swedish social security number")
+      throw new Exception("Invalid swedish personal identity number")
     }
   }
 
   /**
-    * Check if Swedish social security number is valid or not.
+    * Check if Swedish personal identity number is valid or not.
     *
     * @return Boolean
     */
@@ -196,7 +196,7 @@ class Personnummer {
   }
 
   /**
-    * Check if a Swedish social security number is for a male.
+    * Check if a Swedish personal identity number is for a male.
     *
     * @return Int
     */
@@ -251,7 +251,7 @@ class Personnummer {
 object Personnummer {
 
   /**
-    * Parse Swedish social security number.
+    * Parse Swedish personal identity number.
     *
     * @param ssn String
     *
@@ -262,7 +262,7 @@ object Personnummer {
   }
 
   /**
-    * Check if Swedish social security number is valid or not.
+    * Check if Swedish personal identity number is valid or not.
     *
     * @return Boolean
     */
