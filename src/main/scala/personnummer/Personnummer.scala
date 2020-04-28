@@ -66,11 +66,11 @@ class Personnummer {
   /**
     * Personnummer constructor.
     *
-    * @param ssn String
+    * @param pin String
     */
-  def this(ssn: String) = {
+  def this(pin: String) = {
     this()
-    parse(ssn)
+    parse(pin)
   }
 
   /**
@@ -141,14 +141,14 @@ class Personnummer {
   /**
     * Parse Swedish personal identity number.
     */
-  private def parse(ssn: String) = {
+  private def parse(pin: String) = {
     val reg: Regex =
       "^(\\d{2}){0,1}(\\d{2})(\\d{2})(\\d{2})([\\-|\\+]{0,1})?(\\d{3})(\\d{0,1})$".r
-    if (reg.findAllIn(ssn).toList.length == 0) {
+    if (reg.findAllIn(pin).toList.length == 0) {
       throw new Exception("Invalid swedish personal identity number")
     }
 
-    val parts: List[String] = reg.findAllIn(ssn).subgroups.toList
+    val parts: List[String] = reg.findAllIn(pin).subgroups.toList
 
     century = parts(0)
     year = parts(1)
@@ -253,12 +253,12 @@ object Personnummer {
   /**
     * Parse Swedish personal identity number.
     *
-    * @param ssn String
+    * @param pin String
     *
     * @return Personnummer
     */
-  def parse(ssn: String): Personnummer = {
-    new Personnummer(ssn)
+  def parse(pin: String): Personnummer = {
+    new Personnummer(pin)
   }
 
   /**
@@ -266,9 +266,9 @@ object Personnummer {
     *
     * @return Boolean
     */
-  def valid(ssn: String): Boolean = {
+  def valid(pin: String): Boolean = {
     try {
-      new Personnummer(ssn)
+      new Personnummer(pin)
       true
     } catch {
       case _: Throwable => false
