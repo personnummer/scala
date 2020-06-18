@@ -143,7 +143,7 @@ class Personnummer {
     */
   private def parse(pin: String) = {
     val reg: Regex =
-      "^(\\d{2}){0,1}(\\d{2})(\\d{2})(\\d{2})([\\-|\\+]{0,1})?(\\d{3})(\\d{0,1})$".r
+      "^(\\d{2}){0,1}(\\d{2})(\\d{2})(\\d{2})([\\-|\\+]{0,1})?((?!000)\\d{3})(\\d{0,1})$".r
     if (reg.findAllIn(pin).toList.length == 0) {
       throw new Exception("Invalid swedish personal identity number")
     }
