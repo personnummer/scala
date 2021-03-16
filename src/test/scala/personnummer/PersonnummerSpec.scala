@@ -1,7 +1,10 @@
 package personnummer
 
 import io.circe._, io.circe.parser, io.circe.generic.auto._
+import collection.mutable.Stack
 import org.scalatest._
+import flatspec._
+import matchers._
 import scala.io.Source
 import java.time.LocalDate
 import java.time.Period
@@ -29,7 +32,10 @@ case class TestListItem(
   }
 }
 
-class PersonnummerTests extends FunSuite with BeforeAndAfter with Matchers {
+class PersonnummerTests
+    extends AnyFlatSpec
+    with BeforeAndAfter
+    with should.Matchers {
   var testList: List[TestListItem] = _
   var availableListFormats: List[String] = List[String](
     "integer",
@@ -55,7 +61,7 @@ class PersonnummerTests extends FunSuite with BeforeAndAfter with Matchers {
       parser.decode[List[TestListItem]](result).getOrElse(List[TestListItem]())
   }
 
-  test("test personnummer list") {
+  it should "test personnummer list" in {
     for (item <- testList) {
       for (format <- availableListFormats) {
         item.valid shouldEqual Personnummer.valid(item.get(format))
@@ -63,7 +69,7 @@ class PersonnummerTests extends FunSuite with BeforeAndAfter with Matchers {
     }
   }
 
-  test("test personnummer format") {
+  it should "test personnummer format" in {
     for (item <- testList) {
       if (item.valid) {
         for (format <- availableListFormats) {
@@ -79,7 +85,7 @@ class PersonnummerTests extends FunSuite with BeforeAndAfter with Matchers {
     }
   }
 
-  test("test personnummer exceptions") {
+  it should "test personnummer exceptions" in {
     for (item <- testList) {
       if (item.valid == false) {
         for (format <- availableListFormats) {
@@ -89,7 +95,7 @@ class PersonnummerTests extends FunSuite with BeforeAndAfter with Matchers {
     }
   }
 
-  test("test personnummer sex") {
+  it should "test personnummer sex" in {
     for (item <- testList) {
       if (item.valid) {
         for (format <- availableListFormats) {
@@ -102,7 +108,7 @@ class PersonnummerTests extends FunSuite with BeforeAndAfter with Matchers {
     }
   }
 
-  test("test personnummer age") {
+  it should "test personnummer age" in {
     for (item <- testList) {
       if (item.valid) {
         var year = item.separated_long.slice(0, 4)
