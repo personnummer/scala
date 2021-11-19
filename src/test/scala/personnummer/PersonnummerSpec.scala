@@ -73,7 +73,7 @@ class PersonnummerTests
     for (item <- testList) {
       if (item.valid) {
         for (format <- availableListFormats) {
-          if (format != "short_format" && item.separated_format.contains("+") == false) {
+          if (format != "short_format") {
             item.separated_format shouldEqual new Personnummer(item.get(format))
               .format()
             item.long_format shouldEqual Personnummer
@@ -127,7 +127,7 @@ class PersonnummerTests
         val expected: Int = p.getYears()
 
         for (format <- availableListFormats) {
-          if (format != "short_format" && item.separated_format.contains("+") == false) {
+          if (format != "short_format") {
             expected shouldEqual Personnummer.parse(item.get(format)).getAge()
           }
         }
