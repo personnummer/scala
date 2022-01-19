@@ -1,6 +1,6 @@
 import Dependencies._
 
-ThisBuild / scalaVersion := "2.12.15"
+ThisBuild / scalaVersion := "2.13.8"
 ThisBuild / version := "3.0.2"
 ThisBuild / organization := "personnummer"
 ThisBuild / organizationName := "personnummer"
