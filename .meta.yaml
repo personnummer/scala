@@ -1,0 +1,4 @@
+name: "Scala"
+maintainer: "@frozzare"
+spec: 3
+workflow: "scala.yml"
