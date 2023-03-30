@@ -179,12 +179,26 @@ class PersonnummerTests
     for (item <- interimList) {
       if (item.valid) {
         for (format <- availableListFormats) {
-          if (format != "short_format") {
+          if (format != "integer") {
             item.separated_format shouldEqual new Personnummer(item.get(format))
               .format()
             item.long_format shouldEqual Personnummer
               .parse(item.get(format))
               .format(true)
+          }
+        }
+      }
+    }
+  }
+
+  it should "test invalid interim numbers" in {
+    for (item <- interimList) {
+      if (!item.valid) {
+        for (format <- availableListFormats) {
+          if (format != "integer") {
+            an[Exception] should be thrownBy Personnummer.parse(
+              item.get(format)
+            )
           }
         }
       }

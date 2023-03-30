@@ -79,7 +79,7 @@ class Personnummer {
     * @return Boolean
     */
   def isCoordinationNumber(): Boolean = {
-    return testDate(fullYear, month, (day.toInt - 60).toString)
+    testDate(fullYear, month, (day.toInt - 60).toString)
   }
 
   /**
@@ -88,7 +88,7 @@ class Personnummer {
     * @return Boolean
     */
   def isInterimNumber(): Boolean = {
-    return "TRSUWXJKLMN".indexOf(num.take(0)) >= 0;
+    !num.forall(Character.isDigit)
   }
 
   /**
@@ -122,7 +122,7 @@ class Personnummer {
 
     val df: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    return LocalDate.parse(f"${fullYear}-${month}-${ageDay}", df);
+    LocalDate.parse(f"${fullYear}-${month}-${ageDay}", df);
   }
 
   /**
@@ -163,7 +163,8 @@ class Personnummer {
     */
   private def parse(pin: String) = {
     val reg: Regex =
-      "^(\\d{2}){0,1}(\\d{2})(\\d{2})(\\d{2})([\\-\\+]{0,1})?((?!000)\\d{3}|[TRSUWXJKLMN]\\d{2})(\\d{0,1})$".r
+      """^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([+-]?)((?!000)\d{3}|[TRSUWXJKLMN]\d{2})(\d)$""".r
+
     if (reg.findAllIn(pin).toList.length == 0) {
       throw new Exception("Invalid swedish personal identity number")
     }
