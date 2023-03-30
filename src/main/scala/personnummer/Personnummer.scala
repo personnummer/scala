@@ -83,6 +83,15 @@ class Personnummer {
   }
 
   /**
+    * Check if a Swedish personal identity number is a interim number or not.
+    *
+    * @return Boolean
+    */
+  def isInterimNumber(): Boolean = {
+    return "TRSUWXJKLMN".indexOf(num.take(0)) >= 0;
+  }
+
+  /**
     * Format a Swedish personal identity number as one of the official formats,
     * A long format or a short format.
     *
@@ -154,7 +163,7 @@ class Personnummer {
     */
   private def parse(pin: String) = {
     val reg: Regex =
-      "^(\\d{2}){0,1}(\\d{2})(\\d{2})(\\d{2})([\\-\\+]{0,1})?((?!000)\\d{3})(\\d{0,1})$".r
+      "^(\\d{2}){0,1}(\\d{2})(\\d{2})(\\d{2})([\\-\\+]{0,1})?((?!000)\\d{3}|[TRSUWXJKLMN]\\d{2})(\\d{0,1})$".r
     if (reg.findAllIn(pin).toList.length == 0) {
       throw new Exception("Invalid swedish personal identity number")
     }
@@ -202,7 +211,11 @@ class Personnummer {
     * @return Boolean
     */
   private def valid(): Boolean = {
-    val valid: Boolean = lunh(year + month + day + num) == check.toInt
+    var _num: String = num;
+    if (isInterimNumber()) {
+      _num = "1" + num.slice(1, 3)
+    }
+    val valid: Boolean = lunh(year + month + day + _num) == check.toInt
     valid && testDate(fullYear, month, day) || isCoordinationNumber() && valid
   }
 
