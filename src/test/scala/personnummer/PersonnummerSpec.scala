@@ -108,6 +108,30 @@ class PersonnummerTests
     }
   }
 
+  it should "test personnummer date" in {
+    for (item <- testList) {
+      if (item.valid) {
+        var year = item.separated_long.slice(0, 4)
+        var month = item.separated_long.slice(4, 6)
+        var day = item.separated_long.slice(6, 8)
+
+        if (item.`type` == "con") {
+          day = padZero(day.toInt - 60).toString
+        }
+
+        var df = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val expected: LocalDate =
+          LocalDate.parse(f"${year}-${month}-${day}", df)
+
+        for (format <- availableListFormats) {
+          if (format != "short_format") {
+            expected shouldEqual Personnummer.parse(item.get(format)).getDate()
+          }
+        }
+      }
+    }
+  }
+
   it should "test personnummer age" in {
     for (item <- testList) {
       if (item.valid) {

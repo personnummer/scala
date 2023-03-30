@@ -101,19 +101,30 @@ class Personnummer {
   }
 
   /**
-    * Get age from a Swedish personal identity number.
+    * Get date from a Swedish personal identity number.
     *
     * @return Int
     */
-  def getAge(): Int = {
+  def getDate(): LocalDate = {
     var ageDay = day
     if (isCoordinationNumber()) {
       ageDay = padZero(ageDay.toInt - 60)
     }
 
-    val df: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val df: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    return LocalDate.parse(f"${fullYear}-${month}-${ageDay}", df);
+  }
+
+  /**
+    * Get age from a Swedish personal identity number.
+    *
+    * @return Int
+    */
+  def getAge(): Int = {
+    var d = getDate();
     val p: Period = Period.between(
-      LocalDate.parse(f"${fullYear}-${month}-${ageDay}", df),
+      d,
       LocalDate.now
     );
     p.getYears()
