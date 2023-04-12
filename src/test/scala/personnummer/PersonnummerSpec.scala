@@ -180,10 +180,12 @@ class PersonnummerTests
       if (item.valid) {
         for (format <- availableListFormats) {
           if (format != "integer") {
-            item.separated_format shouldEqual new Personnummer(item.get(format))
-              .format()
+            item.separated_format shouldEqual new Personnummer(
+              item.get(format),
+              new Options(allowInterimNumber = true)
+            ).format()
             item.long_format shouldEqual Personnummer
-              .parse(item.get(format))
+              .parse(item.get(format), new Options(allowInterimNumber = true))
               .format(true)
           }
         }
@@ -197,7 +199,8 @@ class PersonnummerTests
         for (format <- availableListFormats) {
           if (format != "integer") {
             an[Exception] should be thrownBy Personnummer.parse(
-              item.get(format)
+              item.get(format),
+              new Options(allowInterimNumber = true)
             )
           }
         }

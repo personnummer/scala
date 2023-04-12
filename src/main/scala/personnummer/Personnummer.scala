@@ -5,6 +5,11 @@ import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
 
+class Options(
+    var allowCoordinationNumber: Boolean = true,
+    var allowInterimNumber: Boolean = false
+) {}
+
 class Personnummer {
 
   /**
@@ -68,9 +73,9 @@ class Personnummer {
     *
     * @param pin String
     */
-  def this(pin: String) = {
+  def this(pin: String, options: Options = new Options()) = {
     this()
-    parse(pin)
+    parse(pin, options)
   }
 
   /**
@@ -161,7 +166,7 @@ class Personnummer {
   /**
     * Parse Swedish personal identity number.
     */
-  private def parse(pin: String) = {
+  private def parse(pin: String, options: Options) = {
     val reg: Regex =
       """^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([+-]?)((?!000)\d{3}|[TRSUWXJKLMN]\d{2})(\d)$""".r
 
@@ -201,7 +206,15 @@ class Personnummer {
 
     fullYear = century + year
 
-    if (this.valid() == false) {
+    if (!this.valid()) {
+      throw new Exception("Invalid swedish personal identity number")
+    }
+
+    if (this.isCoordinationNumber() && !options.allowCoordinationNumber) {
+      throw new Exception("Invalid swedish personal identity number")
+    }
+
+    if (this.isInterimNumber() && !options.allowInterimNumber) {
       throw new Exception("Invalid swedish personal identity number")
     }
   }
@@ -282,8 +295,8 @@ object Personnummer {
     *
     * @return Personnummer
     */
-  def parse(pin: String): Personnummer = {
-    new Personnummer(pin)
+  def parse(pin: String, options: Options = new Options()): Personnummer = {
+    new Personnummer(pin, options)
   }
 
   /**
@@ -291,9 +304,9 @@ object Personnummer {
     *
     * @return Boolean
     */
-  def valid(pin: String): Boolean = {
+  def valid(pin: String, options: Options = new Options()): Boolean = {
     try {
-      new Personnummer(pin)
+      new Personnummer(pin, options)
       true
     } catch {
       case _: Throwable => false
