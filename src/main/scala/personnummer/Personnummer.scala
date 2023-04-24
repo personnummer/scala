@@ -5,6 +5,11 @@ import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
 
+class Options(
+    var allowCoordinationNumber: Boolean = true,
+    var allowInterimNumber: Boolean = false
+) {}
+
 class Personnummer {
 
   /**
@@ -68,9 +73,9 @@ class Personnummer {
     *
     * @param pin String
     */
-  def this(pin: String) = {
+  def this(pin: String, options: Options = new Options()) = {
     this()
-    parse(pin)
+    parse(pin, options)
   }
 
   /**
@@ -79,7 +84,16 @@ class Personnummer {
     * @return Boolean
     */
   def isCoordinationNumber(): Boolean = {
-    return testDate(fullYear, month, (day.toInt - 60).toString)
+    testDate(fullYear, month, (day.toInt - 60).toString)
+  }
+
+  /**
+    * Check if a Swedish personal identity number is a interim number or not.
+    *
+    * @return Boolean
+    */
+  def isInterimNumber(): Boolean = {
+    !num.forall(Character.isDigit)
   }
 
   /**
@@ -101,19 +115,30 @@ class Personnummer {
   }
 
   /**
-    * Get age from a Swedish personal identity number.
+    * Get date from a Swedish personal identity number.
     *
     * @return Int
     */
-  def getAge(): Int = {
+  def getDate(): LocalDate = {
     var ageDay = day
     if (isCoordinationNumber()) {
       ageDay = padZero(ageDay.toInt - 60)
     }
 
-    val df: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val df: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    LocalDate.parse(f"${fullYear}-${month}-${ageDay}", df);
+  }
+
+  /**
+    * Get age from a Swedish personal identity number.
+    *
+    * @return Int
+    */
+  def getAge(): Int = {
+    var d = getDate();
     val p: Period = Period.between(
-      LocalDate.parse(f"${fullYear}-${month}-${ageDay}", df),
+      d,
       LocalDate.now
     );
     p.getYears()
@@ -141,9 +166,10 @@ class Personnummer {
   /**
     * Parse Swedish personal identity number.
     */
-  private def parse(pin: String) = {
+  private def parse(pin: String, options: Options) = {
     val reg: Regex =
-      "^(\\d{2}){0,1}(\\d{2})(\\d{2})(\\d{2})([\\-\\+]{0,1})?((?!000)\\d{3})(\\d{0,1})$".r
+      """^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([+-]?)((?!000)\d{3}|[TRSUWXJKLMN]\d{2})(\d)$""".r
+
     if (reg.findAllIn(pin).toList.length == 0) {
       throw new Exception("Invalid swedish personal identity number")
     }
@@ -180,7 +206,15 @@ class Personnummer {
 
     fullYear = century + year
 
-    if (this.valid() == false) {
+    if (!this.valid()) {
+      throw new Exception("Invalid swedish personal identity number")
+    }
+
+    if (this.isCoordinationNumber() && !options.allowCoordinationNumber) {
+      throw new Exception("Invalid swedish personal identity number")
+    }
+
+    if (this.isInterimNumber() && !options.allowInterimNumber) {
       throw new Exception("Invalid swedish personal identity number")
     }
   }
@@ -191,7 +225,11 @@ class Personnummer {
     * @return Boolean
     */
   private def valid(): Boolean = {
-    val valid: Boolean = lunh(year + month + day + num) == check.toInt
+    var _num: String = num;
+    if (isInterimNumber()) {
+      _num = "1" + num.slice(1, 3)
+    }
+    val valid: Boolean = lunh(year + month + day + _num) == check.toInt
     valid && testDate(fullYear, month, day) || isCoordinationNumber() && valid
   }
 
@@ -257,8 +295,8 @@ object Personnummer {
     *
     * @return Personnummer
     */
-  def parse(pin: String): Personnummer = {
-    new Personnummer(pin)
+  def parse(pin: String, options: Options = new Options()): Personnummer = {
+    new Personnummer(pin, options)
   }
 
   /**
@@ -266,9 +304,9 @@ object Personnummer {
     *
     * @return Boolean
     */
-  def valid(pin: String): Boolean = {
+  def valid(pin: String, options: Options = new Options()): Boolean = {
     try {
-      new Personnummer(pin)
+      new Personnummer(pin, options)
       true
     } catch {
       case _: Throwable => false

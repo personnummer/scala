@@ -37,6 +37,7 @@ class PersonnummerTests
     with BeforeAndAfter
     with should.Matchers {
   var testList: List[TestListItem] = _
+  var interimList: List[TestListItem] = _
   var availableListFormats: List[String] = List[String](
     "integer",
     "long_format",
@@ -53,12 +54,27 @@ class PersonnummerTests
     }
   }
 
+  def getJson(url: String): List[TestListItem] = {
+    return parser
+      .decode[List[TestListItem]](
+        Source
+          .fromURL(
+            url
+          )
+          .mkString
+          .stripMargin
+      )
+      .getOrElse(List[TestListItem]())
+  }
+
   before {
-    val url =
+    testList = getJson(
       "https://raw.githubusercontent.com/personnummer/meta/master/testdata/list.json"
-    val result = Source.fromURL(url).mkString.stripMargin
-    testList =
-      parser.decode[List[TestListItem]](result).getOrElse(List[TestListItem]())
+    )
+
+    interimList = getJson(
+      "https://raw.githubusercontent.com/personnummer/meta/master/testdata/interim.json"
+    )
   }
 
   it should "test personnummer list" in {
@@ -108,6 +124,30 @@ class PersonnummerTests
     }
   }
 
+  it should "test personnummer date" in {
+    for (item <- testList) {
+      if (item.valid) {
+        var year = item.separated_long.slice(0, 4)
+        var month = item.separated_long.slice(4, 6)
+        var day = item.separated_long.slice(6, 8)
+
+        if (item.`type` == "con") {
+          day = padZero(day.toInt - 60).toString
+        }
+
+        var df = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val expected: LocalDate =
+          LocalDate.parse(f"${year}-${month}-${day}", df)
+
+        for (format <- availableListFormats) {
+          if (format != "short_format") {
+            expected shouldEqual Personnummer.parse(item.get(format)).getDate()
+          }
+        }
+      }
+    }
+  }
+
   it should "test personnummer age" in {
     for (item <- testList) {
       if (item.valid) {
@@ -129,6 +169,39 @@ class PersonnummerTests
         for (format <- availableListFormats) {
           if (format != "short_format") {
             expected shouldEqual Personnummer.parse(item.get(format)).getAge()
+          }
+        }
+      }
+    }
+  }
+
+  it should "test valid interim numbers" in {
+    for (item <- interimList) {
+      if (item.valid) {
+        for (format <- availableListFormats) {
+          if (format != "integer") {
+            item.separated_format shouldEqual new Personnummer(
+              item.get(format),
+              new Options(allowInterimNumber = true)
+            ).format()
+            item.long_format shouldEqual Personnummer
+              .parse(item.get(format), new Options(allowInterimNumber = true))
+              .format(true)
+          }
+        }
+      }
+    }
+  }
+
+  it should "test invalid interim numbers" in {
+    for (item <- interimList) {
+      if (!item.valid) {
+        for (format <- availableListFormats) {
+          if (format != "integer") {
+            an[Exception] should be thrownBy Personnummer.parse(
+              item.get(format),
+              new Options(allowInterimNumber = true)
+            )
           }
         }
       }
