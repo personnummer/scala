@@ -1,4 +1,4 @@
 name: "Scala"
 maintainer: "@frozzare"
-spec: 3
+spec: 3.1
 workflow: "scala.yml"
