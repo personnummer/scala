@@ -69,11 +69,11 @@ class PersonnummerTests
 
   before {
     testList = getJson(
-      "https://raw.githubusercontent.com/personnummer/meta/master/testdata/list.json"
+      "https://raw.githubusercontent.com/personnummer/meta/HEAD/testdata/list.json"
     )
 
     interimList = getJson(
-      "https://raw.githubusercontent.com/personnummer/meta/master/testdata/interim.json"
+      "https://raw.githubusercontent.com/personnummer/meta/HEAD/testdata/interim.json"
     )
   }
 
