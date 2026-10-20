@@ -8,6 +8,7 @@ ThisBuild / organizationName := "personnummer"
 lazy val root = (project in file("."))
   .settings(
     name := "Personnummer",
+    scalacOptions ++= Seq("-release", "8"),
     libraryDependencies += scalaTest % Test,
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-core",
@@ -17,9 +18,7 @@ lazy val root = (project in file("."))
   )
 
 ThisBuild / description := "Validate Swedish personal identity numbers."
-ThisBuild / licenses := List(
-  "MIT" -> new URL("https://opensource.org/licenses/MIT")
-)
+ThisBuild / licenses := List(License.MIT)
 ThisBuild / homepage := Some(url("https://personnummer.dev"))
 ThisBuild / scmInfo := Some(
   ScmInfo(
