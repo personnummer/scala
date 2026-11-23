@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
         with:
           distribution: 'zulu'
-          java-version: 11
+          java-version: 17
       - name: Setup sbt launcher
         uses: sbt/setup-sbt@7e114eae4f32ec3f93c851c2793376a77f384409 # v1.5.15
       - name: Run tests

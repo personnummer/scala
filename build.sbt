@@ -18,12 +18,12 @@ lazy val root = (project in file("."))
 
 ThisBuild / description := "Validate Swedish personal identity numbers."
 ThisBuild / licenses := List(
-  "MIT" -> new URL("https://opensource.org/licenses/MIT")
+  "MIT" -> uri("https://opensource.org/licenses/MIT")
 )
-ThisBuild / homepage := Some(url("https://personnummer.dev"))
+ThisBuild / homepage := Some(uri("https://personnummer.dev"))
 ThisBuild / scmInfo := Some(
   ScmInfo(
-    url("https://github.com/personnummer/scala"),
+    uri("https://github.com/personnummer/scala"),
     "scm:git@github.com:personnummer/scala.git"
   )
 )
@@ -32,7 +32,7 @@ ThisBuild / developers := List(
     id = "personnummer",
     name = "Personnummer and Contributors",
     email = "hello@personnummer.dev",
-    url = url("http://personnummer.dev")
+    url = uri("http://personnummer.dev")
   )
 )
 ThisBuild / pomIncludeRepository := { _ => false }
